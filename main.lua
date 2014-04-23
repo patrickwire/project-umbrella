@@ -101,6 +101,10 @@ function love.update(dt)
 				table.remove(objects, i)
 			end
 		end
+	
+	if love.keyboard.isDown("escape") then
+		love.event.push("quit")
+	end
 
 end
 
