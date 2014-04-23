@@ -43,7 +43,7 @@ function love.load()
 	h = images.storm:getHeight()
 	scale = 1
 	speed = 40
-
+	rotation = 0
 
   cam = Camera(x, y,1)
 
@@ -79,7 +79,7 @@ function love.update(dt)
 			end
 		end
 		cam:zoomTo(5/scale)
-
+		rotation = (rotation + dt * speed/10)%(2*3.18)
 		for i, v in ipairs(objects) do
 			-- collision
 			if is_colliding(v) then
@@ -108,7 +108,7 @@ function love.draw()
 			love.graphics.draw(v.image, v.x, v.y, 0 , v.scale, v.scale)
 		end
 	cam:detach()
-	love.graphics.draw(images.storm,game.width/2-(w/2*scale),game.height/2-(h/2*scale),0,scale)
+	love.graphics.draw(images.storm,game.width/2,game.height/2,rotation,scale,scale ,(w/2),(h/2))
 	for i,obj in ipairs(objectInStorm) do
 		if obj.radius>0 then
 			rx,ry= vector.rotate(obj.pos,50,0)
@@ -144,7 +144,8 @@ end
 
 function is_colliding(v)
 
-	if x-w/2*scale <= v.x + v.w and x + w/2*scale >= v.x and y-h/2*scale <= v.y + v.h and y + h/2*scale >= v.y then
+	--if x-w/2*scale <= v.x + v.w and x + w/2*scale >= v.x and y-h/2*scale <= v.y + v.h and y + h/2*scale >= v.y then
+	if vector.dist(v.x,v.y,x,y)<w then
 		return true
 	end
 
