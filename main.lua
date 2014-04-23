@@ -1,9 +1,14 @@
-require("AnAL")
+require("library/AnAL")
 Camera = require "hump.camera"
 vector = require "hump.vector-light"
+Gamestate = require "hump.gamestate"
+
+local menu = {}
+local game = {}
 
 function love.load()
 
+	menu = Gamestate.new()
 	-- load images
 	images = {
 		map = love.graphics.newImage("assests/maps/map.gif"),
@@ -171,4 +176,22 @@ function spawn_animation(v)
 	-- create animation
 
 	table.insert(objectInStorm, t)
+end
+
+function menu:draw()
+	love.graphics.draw(self.background, 0,0)
+end
+
+function menu:init()
+	self.background = love.graphics.newImage("menu1.jpg")
+end
+
+function menu:keyreleased(key)
+	if key == "enter" then
+		Gamestate.switch(game)
+	end
+end
+
+function menu:enter(previous)
+	Buttons.setActive(Buttons.start)
 end
