@@ -135,16 +135,18 @@ function spawn_object()
 	t.image = images.cities[1]
 	t.w = t.image:getWidth() * t.scale
 	t.h = t.image:getHeight() * t.scale
-
+	placed =false
 	-- position
-	t.x = math.random(0, world.width - t.w)
-	t.y = math.random(0, world.height - t.w)
-
-	t.speed = 0
-	r,g,b=maps.world:getPixel(t.x,t.y)
-	if r==255 and r==255 and b==255 then
-		table.insert(objects, t)
-	end
+	repeat
+		t.x = math.random(0, world.width - t.w)
+		t.y = math.random(0, world.height - t.w)
+		t.speed = 0
+		r,g,b=maps.world:getPixel(t.x,t.y)
+		if r==255 and r==255 and b==255 then
+			table.insert(objects, t)
+			placed = true
+		end
+	until placed
 end
 
 function is_colliding(v)
