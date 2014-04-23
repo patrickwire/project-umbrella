@@ -129,7 +129,7 @@ function spawn_object()
 	local t = {}
 
 	-- size
-	t.scale = math.random(80, 100) * 0.003
+	t.scale = math.random(40, 100) * 0.003
 	t.image = images.cities[1]
 	t.w = t.image:getWidth() * t.scale
 	t.h = t.image:getHeight() * t.scale
@@ -145,7 +145,7 @@ end
 function is_colliding(v)
 
 	--if x-w/2*scale <= v.x + v.w and x + w/2*scale >= v.x and y-h/2*scale <= v.y + v.h and y + h/2*scale >= v.y then
-	if vector.dist(v.x,v.y,x,y)<w then
+	if vector.dist(v.x+v.w/2*v.scale,v.y+v.h/2*v.scale,x,y)<w then
 		return true
 	end
 
