@@ -7,9 +7,10 @@ function love.load()
 	-- load images
 	images = {
 		spaceship = love.graphics.newImage("spaceship.png"),
-		meteor = love.graphics.newImage("meteor.jpg"),
+		meteor = love.graphics.newImage("meteor.png"),
 		animation = love.graphics.newImage("animation.png"),
 		map = love.graphics.newImage("map.gif"),
+		storm = love.graphics.newImage("storm.png"),
 	}
 
 	-- sound effect
@@ -30,13 +31,13 @@ function love.load()
 		width = 4500,
 		height = 2234
 	}
-
+	objectInStorm = {{image = images.meteor,pos = 0, radius = 1}}
 	-- player
-	x, y = 0, 0
-	w = images.spaceship:getWidth()
-	h = images.spaceship:getHeight()
+	x, y = 200, 200
+	w = images.storm:getWidth()
+	h = images.storm:getHeight()
 
-	speed = 100
+	speed = 40
 
 
   cam = Camera(x, y,5)
@@ -64,6 +65,10 @@ function love.update(dt)
 		end
 		local dx,dy = x - cam.x, y - cam.y
     cam:move(dx/2, dy/2)
+		for i,obj in ipairs(objectInStorm) do
+			obj.radius=obj.radius *(1-dt)
+			obj.pos=(obj.pos + dt * speed/10)%(2*3.18)
+		end
 
 end
 
@@ -72,7 +77,15 @@ function love.draw()
 	cam:attach()
 	love.graphics.draw(images.map,0,0)
 	cam:detach()
-	love.graphics.draw(images.spaceship,game.width/2,game.height/2)
+	love.graphics.draw(images.storm,game.width/2-(w/2),game.height/2-(h/2))
+	for i,obj in ipairs(objectInStorm) do
+		if obj.radius>0 then
+			rx,ry= vector.rotate(obj.pos,50,0)
+			love.graphics.draw(obj.image,
+				game.width/2-(obj.image:getWidth()/2*obj.radius)+rx*obj.radius,
+				game.height/2-(obj.image:getHeight()/2*obj.radius)+ry*obj.radius,
+				0,obj.radius)
+		end
+	end
 	love.graphics.print(cam.x.." "..cam.y)
-	love.graphics.print(nx.." "..ny,30,30)
 end
