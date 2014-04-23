@@ -11,6 +11,7 @@ function love.load()
 		animation = love.graphics.newImage("animation.png"),
 		map = love.graphics.newImage("map.gif"),
 		storm = love.graphics.newImage("storm.png"),
+		cities = {love.graphics.newImage("city1.png")},
 	}
 
 	-- sound effect
@@ -31,22 +32,25 @@ function love.load()
 		width = 4500,
 		height = 2234
 	}
-	objectInStorm = {{image = images.meteor,pos = 0, radius = 1}}
+	objects = {}
+	for i=1,1000 do
+		spawn_object()
+	end
+	objectInStorm = {}
 	-- player
 	x, y = 200, 200
 	w = images.storm:getWidth()
 	h = images.storm:getHeight()
-
+	scale = 1
 	speed = 40
 
 
-  cam = Camera(x, y,5)
+  cam = Camera(x, y,1)
+
 end
 
 function love.update(dt)
 	-- update x
-
-
 	-- update y
 		nx,ny = vector.normalize(vector.sub(game.width/2,game.height/2,love.mouse.getX(),love.mouse.getY()))
     x =x - nx * dt * speed
@@ -63,11 +67,35 @@ function love.update(dt)
 		if y < 0 then
 			y=0
 		end
+		scale=math.log(1001.5-#objects)
+		-- cmaera update
 		local dx,dy = x - cam.x, y - cam.y
     cam:move(dx/2, dy/2)
 		for i,obj in ipairs(objectInStorm) do
 			obj.radius=obj.radius *(1-dt)
 			obj.pos=(obj.pos + dt * speed/10)%(2*3.18)
+			if obj.radius <0.01 then
+				table.remove(objectInStorm, i)
+			end
+		end
+		cam:zoomTo(5/scale)
+
+		for i, v in ipairs(objects) do
+			-- collision
+			if is_colliding(v) then
+
+			-- show animation
+				spawn_animation(v)
+
+			-- play/rewind effect
+				if sound:isStopped() then
+					love.audio.play(sound)
+				else
+					sound:rewind()
+				end
+
+				table.remove(objects, i)
+			end
 		end
 
 end
@@ -75,9 +103,12 @@ end
 function love.draw()
 
 	cam:attach()
-	love.graphics.draw(images.map,0,0)
+		love.graphics.draw(images.map,0,0)
+		for i, v in ipairs(objects) do
+			love.graphics.draw(v.image, v.x, v.y, 0 , v.scale, v.scale)
+		end
 	cam:detach()
-	love.graphics.draw(images.storm,game.width/2-(w/2),game.height/2-(h/2))
+	love.graphics.draw(images.storm,game.width/2-(w/2*scale),game.height/2-(h/2*scale),0,scale)
 	for i,obj in ipairs(objectInStorm) do
 		if obj.radius>0 then
 			rx,ry= vector.rotate(obj.pos,50,0)
@@ -88,4 +119,48 @@ function love.draw()
 		end
 	end
 	love.graphics.print(cam.x.." "..cam.y)
+	love.graphics.print("Objects"..#objects,0,15)
+	love.graphics.print("Animations"..#objectInStorm,0,30)
+	love.graphics.print("scale"..scale,0,45)
+end
+
+function spawn_object()
+
+	local t = {}
+
+	-- size
+	t.scale = math.random(80, 100) * 0.003
+	t.image = images.cities[1]
+	t.w = t.image:getWidth() * t.scale
+	t.h = t.image:getHeight() * t.scale
+
+	-- position
+	t.x = math.random(0, world.width - t.w)
+	t.y = math.random(0, world.height - t.w)
+
+	t.speed = 0
+	table.insert(objects, t)
+end
+
+function is_colliding(v)
+
+	if x-w/2*scale <= v.x + v.w and x + w/2*scale >= v.x and y-h/2*scale <= v.y + v.h and y + h/2*scale >= v.y then
+		return true
+	end
+
+	return false
+end
+
+function spawn_animation(v)
+
+	local t = {}
+
+	-- copy values
+	t.image = v.image
+	t.pos = 0
+	t.radius = 1
+
+	-- create animation
+
+	table.insert(objectInStorm, t)
 end
