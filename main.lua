@@ -52,8 +52,9 @@ end
 function love.update(dt)
 	-- update x
 	-- update y
+	if love.mouse.isDown("l")then
 		nx,ny = vector.normalize(vector.sub(game.width/2,game.height/2,love.mouse.getX(),love.mouse.getY()))
-    x =x - nx * dt * speed
+		x =x - nx * dt * speed
 		y =y - ny * dt * speed
 		if x > world.width then
 			x=world.width
@@ -67,6 +68,7 @@ function love.update(dt)
 		if y < 0 then
 			y=0
 		end
+	end
 		scale=math.log(1001.5-#objects)
 		-- cmaera update
 		local dx,dy = x - cam.x, y - cam.y
