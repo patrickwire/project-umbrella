@@ -13,7 +13,9 @@ function love.load()
 		storm = love.graphics.newImage("storm.png"),
 		cities = {love.graphics.newImage("city1.png")},
 	}
-
+	maps = {
+		world = love.image.newImageData("map.gif")
+	}
 	-- sound effect
 	sound = love.audio.newSource("crash.ogg", "static")
 
@@ -139,7 +141,10 @@ function spawn_object()
 	t.y = math.random(0, world.height - t.w)
 
 	t.speed = 0
-	table.insert(objects, t)
+	r,g,b=maps.world:getPixel(t.x,t.y)
+	if r==255 and r==255 and b==255 then
+		table.insert(objects, t)
+	end
 end
 
 function is_colliding(v)
