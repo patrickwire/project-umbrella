@@ -52,7 +52,7 @@ function love.load()
 end
 
 function love.update(dt)
-	
+
 	--Bewegung
 	if love.mouse.isDown("l")then
 		nx,ny = vector.normalize(vector.sub(game.width/2,game.height/2,love.mouse.getX(),love.mouse.getY()))
@@ -71,7 +71,7 @@ function love.update(dt)
 			y=0
 		end
 	end
-		
+	speed=speed - dt	
 		scale=math.log(1001.5-#objects)
 		-- cmaera update
 		local dx,dy = x - cam.x, y - cam.y
@@ -98,11 +98,11 @@ function love.update(dt)
 				else
 					sound:rewind()
 				end
-
+				speed=40
 				table.remove(objects, i)
 			end
 		end
-	
+
 	if love.keyboard.isDown("escape") then
 		love.event.push("quit")
 	end
