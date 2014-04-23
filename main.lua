@@ -6,24 +6,15 @@ function love.load()
 
 	-- load images
 	images = {
-		spaceship = love.graphics.newImage("spaceship.png"),
-		meteor = love.graphics.newImage("meteor.png"),
-		animation = love.graphics.newImage("animation.png"),
-		map = love.graphics.newImage("map.gif"),
+		map = love.graphics.newImage("assests/maps/map.gif"),
 		storm = love.graphics.newImage("storm.png"),
-		cities = {love.graphics.newImage("city1.png")},
+		cities = {love.graphics.newImage("assests/objects/city1.png")},
 	}
 	maps = {
-		world = love.image.newImageData("map.gif")
+		world = love.image.newImageData("assests/maps/map.gif")
 	}
 	-- sound effect
-	sound = love.audio.newSource("crash.ogg", "static")
-
-	-- music
-	music = love.audio.newSource("music.mp3")
-	music:setLooping(true)
-	music:setVolume(0.5)
-	--love.audio.play(music)
+	sound = love.audio.newSource("assests/sfx/crash.ogg", "static")
 
 	-- game
 	game={
