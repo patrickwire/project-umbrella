@@ -7,7 +7,7 @@ function love.load()
 	-- load images
 	images = {
 		map = love.graphics.newImage("assests/maps/map.gif"),
-		storm = love.graphics.newImage("storm.png"),
+		storm = love.graphics.newImage("assests/gfx/orkan.png"),
 		cities = {love.graphics.newImage("assests/objects/city1.png")},
 	}
 	maps = {
@@ -32,8 +32,8 @@ function love.load()
 	objectInStorm = {}
 	-- player
 	x, y = 200, 200
-	w = images.storm:getWidth()
-	h = images.storm:getHeight()
+	w = images.storm:getWidth()/10
+	h = images.storm:getHeight()/10
 	scale = 1
 	speed = 40
 	rotation = 0
@@ -62,7 +62,7 @@ function love.update(dt)
 			y=0
 		end
 	end
-	speed=speed - dt	
+	speed=speed - dt
 		scale=math.log(1001.5-#objects)
 		-- cmaera update
 		local dx,dy = x - cam.x, y - cam.y
@@ -108,7 +108,7 @@ function love.draw()
 			love.graphics.draw(v.image, v.x, v.y, 0 , v.scale, v.scale)
 		end
 	cam:detach()
-	love.graphics.draw(images.storm,game.width/2,game.height/2,rotation,scale,scale ,(w/2),(h/2))
+	love.graphics.draw(images.storm,game.width/2,game.height/2,rotation,scale/10,scale/10,(w*10/2),(h*10/2))
 	for i,obj in ipairs(objectInStorm) do
 		if obj.radius>0 then
 			rx,ry= vector.rotate(obj.pos,50,0)
