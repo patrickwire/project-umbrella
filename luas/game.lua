@@ -3,27 +3,49 @@ game = Gamestate.new()
 WATER = 1
 LAND = 2
 
+
+AFRICA = 1
+WELOVERUSSIA = 2
+CORN = 3
+KRIM = 4
+GANGNAMSTYLE = 5
+CSTRO = 6
+FUKOSHIMA = 7
+NINEELEVEN = 8
+KROMBACHER = 9
+
+
 function game:init()
 	self:reset()
 end
 
 function game:reset()
-
+	actions= {0,0,0,0,0,0,0,0,0,0}
 	images = {
-		map = love.graphics.newImage("assests/maps/weltkarte.png"),
+		map = love.graphics.newImage("assests/maps/weltkarte_draw.png"),
 		storm = love.graphics.newImage("assests/gfx/orkan.png"),
 		storm2 = love.graphics.newImage("assests/gfx/orkan_02.png"),
 		cities = {
-			{image=love.graphics.newImage("assests/objects/city1.png"),scale=1}
+			{image=love.graphics.newImage("assests/objects/city1.png"),scale=1},
+			{image=love.graphics.newImage("assests/objects/feld_gelb.png"),scale=0.1},
+			{image=love.graphics.newImage("assests/objects/feld_gruen.png"),scale=0.1},
+			{image=love.graphics.newImage("assests/objects/fussballfeld.png"),scale=0.02},
+			{image=love.graphics.newImage("assests/objects/Stadium01.png"),scale=0.1},
+			--{image=love.graphics.newImage("assests/objects/Stadium02.png"),scale=1},
+			--{image=love.graphics.newImage("assests/objects/Stadium03.png"),scale=1},
 		},
 		water = {
-			{image = love.graphics.newImage("assests/objects/schiff.png"),scale=0.05}
-
+			{image = love.graphics.newImage("assests/objects/water1.png"),scale=0.05},
+			{image = love.graphics.newImage("assests/objects/water2.png"),scale=0.05},
+			{image = love.graphics.newImage("assests/objects/water3.png"),scale=0.1},
+			{image = love.graphics.newImage("assests/objects/water4.png"),scale=0.1},
+			{image = love.graphics.newImage("assests/objects/water5.png"),scale=0.02},
 		},
 	}
 
 	maps = {
-		world = love.image.newImageData("assests/maps/weltkarte.png")
+		world = love.image.newImageData("assests/maps/weltkarte.png"),
+		actions = love.image.newImageData("assests/maps/weltkarte_actions.png")
 	}
 	-- sound effect
 	sound = love.audio.newSource("assests/sfx/crash.ogg", "static")
@@ -39,13 +61,13 @@ function game:reset()
 	}
 	objects = {}
 	
-	for i=1,1000 do
+	for i=1,3000 do
 		spawn_object()
 	end
 	
 	objectInStorm = {}
 	-- player
-	x, y = 200, 200
+	x, y = 3862, 1111
 	w = images.storm:getWidth()/10
 	h = images.storm:getHeight()/10
 	scale = 1
@@ -54,7 +76,8 @@ function game:reset()
 	storm = {}
 	storm.anim = newAnimation(images.storm, 1017, 1005, 0.06, 1)
 	cam = Camera(x, y,1)
-	points = 0
+	points = 20
+	achivments = {}
 	
 end
 
@@ -98,8 +121,16 @@ function game:update(dt)
 		for i, v in ipairs(objects) do
 			-- collision
 			if is_colliding(v) then
-
-			-- show animation
+				print(v.action)
+				if v.action==CORN then
+					actions[CORN]=0
+				end
+				if v.action==GANGNAMSTYLE then
+					actions[GANGNAMSTYLE]=0
+					print(actions[GANGNAMSTYLE])
+					print('korea')
+				end
+				-- show animation
 				spawn_animation(v)
 
 			-- play/rewind effect
@@ -119,6 +150,16 @@ function game:update(dt)
 		if math.random(10000) <= 2000 * dt then
 		spawn_object()
 	end
+	-- check achivments
+	if actions[CORN] ~=nil and actions[CORN]<=0 then
+		table.insert(achivments, {title = "Wer Genmais sätt ...",text="sie haben allen Genmais in den USA zerstöhrt"})
+		actions[CORN]=nil
+	end
+	
+	if actions[GANGNAMSTYLE] ~=nil and actions[GANGNAMSTYLE]<=0 then
+		table.insert(achivments, {title = "oppan gangnam style",text="Kim Jong Un veranstaltet eien Parade für Dich"})
+		actions[GANGNAMSTYLE]=nil
+	end
 
 	if love.keyboard.isDown("escape") then
 		love.event.push("quit")
@@ -130,6 +171,7 @@ function game:draw()
 	cam:attach()
 		love.graphics.draw(images.map,0,0)
 		for i, v in ipairs(objects) do
+			
 			love.graphics.draw(v.image, v.x, v.y, v.rotation , v.scale, v.scale)
 		end
 	cam:detach()
@@ -146,6 +188,12 @@ function game:draw()
 				game.height/2-obj.image:getHeight()*curscale/2+ry*obj.radius*scale,
 				0,curscale)
 		end
+	end
+	for i,achiv in ipairs(achivments) do
+		love.graphics.setNewFont(18)
+		love.graphics.print(achiv.title,game.width-300,i*40)
+		love.graphics.setNewFont(12)
+		love.graphics.print(achiv.text,game.width-300,i*40+22)
 	end
 	love.graphics.print(cam.x.." "..cam.y)
 	love.graphics.print("Objects"..#objects,0,15)
@@ -174,6 +222,9 @@ function spawn_object()
 		t.y = math.random(0, world.height -100)
 		t.speed = 0
 		objlist = nil
+		t.action = 0
+		
+		-- get correct texture list
 		r,g,b = maps.world:getPixel(t.x,t.y)
 		if r==0 and g==255 and b==0 then
 			objlist = images.cities
@@ -183,12 +234,57 @@ function spawn_object()
 			objlist = images.water
 			t.type = WATER
 		end
+		
+		-- load image
 		if objlist ~= nil then
-			t.image = objlist[1].image
-			t.scale = math.random(40, 100) * 0.003 * objlist[1].scale
+			rand = math.random(1,#objlist)
+			t.number = rand
+			t.image = objlist[rand].image
+			t.scale = math.random(40, 100) * 0.003 * objlist[rand].scale
+		end
+		
+		--special actions
+		r,g,b = maps.actions:getPixel(t.x,t.y)
+		--Africa
+		if r==140 and g==130 and b==21 then
+			t.action = AFRICA
+		end
+		--WELOVERUSSIA
+		if r==255 and g==0 and b==0 then
+			t.action = WELOVERUSSIA
+		end
+		--CORN
+		if r==21 and g==40 and b==140 and (t.number == 2 or t.number == 3) and t.type == LAND then
+			t.action = CORN
+		end
+		--KRIM
+		if r==255 and g==0 and b==228 then
+			t.action = KRIM
+		end
+		--GANGNAMSTYLE
+		if r==87 and g==93 and b==126 then
+			t.action = GANGNAMSTYLE
+		end
+		--CSTRO
+		if false then
+			t.action = CASTRO
+		end
+		--FUKOSHIMA
+		if false then
+			t.action = FUKOSHIMA
+		end
+		--NINEELEVEN
+		if false then
+			t.action = NINEELEVEN
+		end
+		--KROMBACHER
+		if r==169 and g==141 and b==141 then
+			t.action = AKROMBACHER
 		end
 	until t.image ~= nil
-
+	if t.action~=0 then 
+		actions[t.action]=actions[t.action]+1
+	end
 	t.w = t.image:getWidth() * t.scale
 	t.h = t.image:getHeight() * t.scale
 	t.rotation = math.random() * math.pi/2-(math.pi/4)
