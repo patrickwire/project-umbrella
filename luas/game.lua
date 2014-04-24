@@ -14,12 +14,7 @@ FUKOSHIMA = 7
 NINEELEVEN = 8
 KROMBACHER = 9
 
-
 function game:init()
-	self:reset()
-end
-
-function game:reset()
 	actions= {0,0,0,0,0,0,0,0,0,0}
 	images = {
 		map = love.graphics.newImage("assests/maps/weltkarte_draw.png"),
@@ -79,9 +74,16 @@ function game:reset()
 	points = 20
 	achivments = {}
 	
+	pause = false
+	
 end
 
 function game:update(dt)
+
+	if pause then 
+		return
+	end
+	
 	if love.mouse.isDown("l")then
 		nx,ny = vector.normalize(vector.sub(game.width/2,game.height/2,love.mouse.getX(),love.mouse.getY()))
 		x =x - nx * dt * speed
@@ -167,6 +169,10 @@ function game:update(dt)
 end
 
 function game:draw()
+
+	if pause then
+		love.graphics.print("P A U S E",400, 300)
+	end
 	-- draw in wolrd
 	cam:attach()
 		love.graphics.draw(images.map,0,0)
@@ -202,8 +208,8 @@ function game:draw()
 end
 
 function game:keypressed(key)
-	if key == "p" and Gamestate.current() ~= menu then
-		love.event.push("pause")
+	if key == "p" then
+		pause = not pause
 	end
 end
 
