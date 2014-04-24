@@ -22,15 +22,17 @@ end
 function game:reset()
 	actions= {0,0,0,0,0,0,0,0,0,0}
 	images = {
-		map = love.graphics.newImage("assests/maps/weltkarte_draw.png"),
+		map = love.graphics.newImage("assests/maps/weltkarte2.png"),
 		storm = love.graphics.newImage("assests/gfx/orkan.png"),
 		storm2 = love.graphics.newImage("assests/gfx/orkan_02.png"),
 		cities = {
-			{image=love.graphics.newImage("assests/objects/city1.png"),scale=1},
+			{image=love.graphics.newImage("assests/objects/Stadt_gross.png"),scale=0.1},
 			{image=love.graphics.newImage("assests/objects/feld_gelb.png"),scale=0.1},
 			{image=love.graphics.newImage("assests/objects/feld_gruen.png"),scale=0.1},
 			{image=love.graphics.newImage("assests/objects/fussballfeld.png"),scale=0.02},
 			{image=love.graphics.newImage("assests/objects/Stadium01.png"),scale=0.1},
+			{image=love.graphics.newImage("assests/objects/Stadt_klein02.png"),scale=0.4},
+			{image=love.graphics.newImage("assests/objects/Stadt_mittel.png"),scale=0.3},
 			--{image=love.graphics.newImage("assests/objects/Stadium02.png"),scale=1},
 			--{image=love.graphics.newImage("assests/objects/Stadium03.png"),scale=1},
 		},
