@@ -89,6 +89,7 @@ function love.update(dt)
 				table.remove(objectInStorm, i)
 			end
 		end
+
 		cam:zoomTo(5/scale)
 		rotation = (rotation + dt * speed/10)%(2*math.pi)
 		for i, v in ipairs(objects) do
@@ -158,6 +159,7 @@ function spawn_object()
 		t.x = math.random(0, world.width - 100)
 		t.y = math.random(0, world.height -100)
 		t.speed = 0
+		objlist =nil
 		r,g,b=maps.world:getPixel(t.x,t.y)
 		if r==0 and g==255 and b==0 then
 			objlist=images.cities
