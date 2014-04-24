@@ -3,8 +3,8 @@ Camera = require "hump.camera"
 vector = require "hump.vector-light"
 Gamestate = require "hump.gamestate"
 
-require "luas/game"
-require "luas/menu"
+require "class/game"
+require "class/menu"
 
 function love.load()
 	Gamestate.switch(menu)

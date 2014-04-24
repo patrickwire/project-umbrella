@@ -2,6 +2,7 @@ game = Gamestate.new()
 
 WATER = 1
 LAND = 2
+DESERT = 3
 
 
 AFRICA = 1
@@ -13,8 +14,10 @@ CSTRO = 6
 FUKOSHIMA = 7
 NINEELEVEN = 8
 KROMBACHER = 9
+MOBBYDICK = 10
 
 function game:init()
+	 math.randomseed( os.time() )
 	actions= {0,0,0,0,0,0,0,0,0,0}
 	images = {
 		map = love.graphics.newImage("assets/maps/weltkarte2.png"),
@@ -28,6 +31,8 @@ function game:init()
 			{image=love.graphics.newImage("assets/objects/Stadium01.png"),scale=0.1},
 			{image=love.graphics.newImage("assets/objects/Stadt_klein02.png"),scale=0.4},
 			{image=love.graphics.newImage("assets/objects/Stadt_mittel.png"),scale=0.3},
+			--{image=love.graphics.newImage("assests/objects/Stadium02.png"),scale=1},
+			--{image=love.graphics.newImage("assests/objects/Stadium03.png"),scale=1},
 		},
 		water = {
 			{image = love.graphics.newImage("assets/objects/water1.png"),scale=0.05},
@@ -35,6 +40,9 @@ function game:init()
 			{image = love.graphics.newImage("assets/objects/water3.png"),scale=0.1},
 			{image = love.graphics.newImage("assets/objects/water4.png"),scale=0.1},
 			{image = love.graphics.newImage("assets/objects/water5.png"),scale=0.02},
+		},
+		desert = {
+			{image = love.graphics.newImage("assets/objects/Tipi02.png"),scale=0.05},
 		},
 	}
 
@@ -51,8 +59,8 @@ function game:init()
 		height = love.graphics.getHeight()
 	}
 	world = {
-		width = 4500,
-		height = 2234
+		width = 6937,
+		height = 4500
 	}
 	objects = {}
 	
@@ -103,7 +111,7 @@ function game:update(dt)
 	end
 	storm.anim:update(dt)
 	speed=speed - dt
-	scale=math.log(points+2)/3
+	scale=math.log(points+2/3)
 	-- rotate storm
 	rotation = (rotation + dt * speed/10)%(2*math.pi)
 
@@ -125,12 +133,22 @@ function game:update(dt)
 			if is_colliding(v) then
 				print(v.action)
 				if v.action==CORN then
-					actions[CORN]=0
+					actions[CORN]=actions[CORN]-1
 				end
 				if v.action==GANGNAMSTYLE then
-					actions[GANGNAMSTYLE]=0
-					print(actions[GANGNAMSTYLE])
-					print('korea')
+					actions[GANGNAMSTYLE]=actions[GANGNAMSTYLE]-1
+				end
+				if v.action==AFRICA then
+					actions[AFRICA]=actions[AFRICA]-1
+				end
+				if v.action==KRIM then
+					actions[KRIM]=actions[KRIM]-1
+				end
+				if v.action==WELOVERUSSIA then
+					actions[WELOVERUSSIA]=actions[WELOVERUSSIA]-1
+				end
+				if v.action==KROMBACHER then
+					actions[KROMBACHER]=actions[KROMBACHER]-1
 				end
 				-- show animation
 				spawn_animation(v)
@@ -162,6 +180,22 @@ function game:update(dt)
 		table.insert(achivments, {title = "oppan gangnam style",text="Kim Jong Un veranstaltet eien Parade für Dich"})
 		actions[GANGNAMSTYLE]=nil
 	end
+	if actions[AFRICA] ~=nil and actions[AFRICA]<=0 then
+		table.insert(achivments, {title = "I bless the rains down in Africa",text="Du hast den Hunger in der 3. Welt besiegt"})
+		actions[GANGNAMSTYLE]=nil
+	end
+	if actions[KRIM] ~=nil and actions[KRIM]<=0 then
+		table.insert(achivments, {title = "Weisst du noch Vitalie",text="Die Ukraiene wurde von den Russen Befreit"})
+		actions[GANGNAMSTYLE]=nil
+	end
+	if actions[WELOVERUSSIA] ~=nil and actions[WELOVERUSSIA]<=0 then
+		table.insert(achivments, {title = "We love Russia ... not",text="Obama hat ihnen eine Freundschaftsanfrage gestellt"})
+		actions[WELOVERUSSIA]=nil
+	end
+	if actions[KROMBACHER] ~=nil and actions[KROMBACHER]<=0 then
+		table.insert(achivments, {title = "Krombacher Regenwaldprojekt",text="Da brauchen wir ganzschön viel Bier um das wieder Aufzubauen..."})
+		actions[KROMBACHER]=nil
+	end
 
 	if love.keyboard.isDown("escape") then
 		love.event.push("quit")
@@ -170,9 +204,7 @@ end
 
 function game:draw()
 
-	if pause then
-		love.graphics.print("P A U S E",400, 300)
-	end
+	
 	-- draw in wolrd
 	cam:attach()
 		love.graphics.draw(images.map,0,0)
@@ -205,6 +237,12 @@ function game:draw()
 	love.graphics.print("Objects"..#objects,0,15)
 	love.graphics.print("Animations"..#objectInStorm,0,30)
 	love.graphics.print("scale"..scale,0,45)
+	
+	if pause then
+		love.graphics.setNewFont(40)
+		love.graphics.print("P A U S E",400, 300)
+		love.graphics.setNewFont(12)
+	end
 end
 
 function game:keypressed(key)
@@ -217,11 +255,15 @@ function spawn_object()
 
 	local t = {}
 
+	-- size
+
+
+
 	placed =false
 	-- position
 	repeat
-		t.x = math.random(0, world.width - 100)
-		t.y = math.random(0, world.height -100)
+		t.x = math.random(0, world.width-1)
+		t.y = math.random(0, world.height-1)
 		t.speed = 0
 		objlist = nil
 		t.action = 0
@@ -235,6 +277,10 @@ function spawn_object()
 		if r==0 and g==0 and b==255 then
 			objlist = images.water
 			t.type = WATER
+		end
+		if r==255 and g==255 and b==0 and math.random(1,3)==1 then
+			objlist = images.desert
+			t.type = DESERT
 		end
 		
 		-- load image
@@ -295,6 +341,7 @@ end
 
 function is_colliding(v)
 
+	--if x-w/2*scale <= v.x + v.w and x + w/2*scale >= v.x and y-h/2*scale <= v.y + v.h and y + h/2*scale >= v.y then
 	if vector.dist(v.x+v.w/2*v.scale,v.y+v.h/2*v.scale,x,y)<w*scale/4 then
 		print ("center x"..x.." y"..y.."w"..(w*scale/4))
 		print ("obj x"..v.x.." y"..v.y.." w"..v.w.." h"..v.h.." dist"..vector.dist(v.x+v.w/2*v.scale,v.y+v.h/2*v.scale,x,y))
@@ -313,6 +360,8 @@ function spawn_animation(v)
 	t.pos = 0
 	t.radius = 1
 	t.scale = v.scale
+
+	-- create animation
 
 	table.insert(objectInStorm, t)
 end

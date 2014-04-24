@@ -20,38 +20,38 @@ function game:init()
 	 math.randomseed( os.time() )
 	actions= {0,0,0,0,0,0,0,0,0,0}
 	images = {
-		map = love.graphics.newImage("assests/maps/weltkarte2.png"),
-		storm = love.graphics.newImage("assests/gfx/orkan.png"),
-		storm2 = love.graphics.newImage("assests/gfx/orkan_02.png"),
+		map = love.graphics.newImage("assets/maps/weltkarte2.png"),
+		storm = love.graphics.newImage("assets/gfx/orkan.png"),
+		storm2 = love.graphics.newImage("assets/gfx/orkan_02.png"),
 		cities = {
-			{image=love.graphics.newImage("assests/objects/Stadt_gross.png"),scale=0.1},
-			{image=love.graphics.newImage("assests/objects/feld_gelb.png"),scale=0.1},
-			{image=love.graphics.newImage("assests/objects/feld_gruen.png"),scale=0.1},
-			{image=love.graphics.newImage("assests/objects/fussballfeld.png"),scale=0.02},
-			{image=love.graphics.newImage("assests/objects/Stadium01.png"),scale=0.1},
-			{image=love.graphics.newImage("assests/objects/Stadt_klein02.png"),scale=0.4},
-			{image=love.graphics.newImage("assests/objects/Stadt_mittel.png"),scale=0.3},
+			{image=love.graphics.newImage("assets/objects/Stadt_gross.png"),scale=0.1},
+			{image=love.graphics.newImage("assets/objects/feld_gelb.png"),scale=0.1},
+			{image=love.graphics.newImage("assets/objects/feld_gruen.png"),scale=0.1},
+			{image=love.graphics.newImage("assets/objects/fussballfeld.png"),scale=0.02},
+			{image=love.graphics.newImage("assets/objects/Stadium01.png"),scale=0.1},
+			{image=love.graphics.newImage("assets/objects/Stadt_klein02.png"),scale=0.4},
+			{image=love.graphics.newImage("assets/objects/Stadt_mittel.png"),scale=0.3},
 			--{image=love.graphics.newImage("assests/objects/Stadium02.png"),scale=1},
 			--{image=love.graphics.newImage("assests/objects/Stadium03.png"),scale=1},
 		},
 		water = {
-			{image = love.graphics.newImage("assests/objects/water1.png"),scale=0.05},
-			{image = love.graphics.newImage("assests/objects/water2.png"),scale=0.05},
-			{image = love.graphics.newImage("assests/objects/water3.png"),scale=0.1},
-			{image = love.graphics.newImage("assests/objects/water4.png"),scale=0.1},
-			{image = love.graphics.newImage("assests/objects/water5.png"),scale=0.02},
+			{image = love.graphics.newImage("assets/objects/water1.png"),scale=0.05},
+			{image = love.graphics.newImage("assets/objects/water2.png"),scale=0.05},
+			{image = love.graphics.newImage("assets/objects/water3.png"),scale=0.1},
+			{image = love.graphics.newImage("assets/objects/water4.png"),scale=0.1},
+			{image = love.graphics.newImage("assets/objects/water5.png"),scale=0.02},
 		},
 		desert = {
-			{image = love.graphics.newImage("assests/objects/Tipi02.png"),scale=0.05},
+			{image = love.graphics.newImage("assets/objects/Tipi02.png"),scale=0.05},
 		},
 	}
 
 	maps = {
-		world = love.image.newImageData("assests/maps/weltkarte.png"),
-		actions = love.image.newImageData("assests/maps/weltkarte_actions.png")
+		world = love.image.newImageData("assets/maps/weltkarte.png"),
+		actions = love.image.newImageData("assets/maps/weltkarte_actions.png")
 	}
 	-- sound effect
-	sound = love.audio.newSource("assests/sfx/crash.ogg", "static")
+	sound = love.audio.newSource("assets/sfx/crash.ogg", "static")
 
 	-- game
 	game={
