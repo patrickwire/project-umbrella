@@ -1,5 +1,6 @@
 function love.conf(t)
 	t.title = "Project Umbrella"
+	t.window.icon = "assets/gfx/sturm_seitlich.png"
 	t.window.width = 0               -- The window width (number)
     t.window.height = 0              -- The window height (number)
     t.window.borderless = true        -- Remove all border visuals from the window (boolean)

@@ -23,6 +23,7 @@ function game:init()
 		map = love.graphics.newImage("assets/maps/weltkarte2.png"),
 		storm = love.graphics.newImage("assets/gfx/orkan.png"),
 		storm2 = love.graphics.newImage("assets/gfx/orkan_02.png"),
+		rainforest = love.graphics.newImage("assets/objects/rainforest.png"),
 		cities = {
 			{image=love.graphics.newImage("assets/objects/Stadt_gross.png"),scale=0.1},
 			{image=love.graphics.newImage("assets/objects/feld_gelb.png"),scale=0.1},
@@ -132,23 +133,25 @@ function game:update(dt)
 			-- collision
 			if is_colliding(v) then
 				print(v.action)
-				if v.action==CORN then
-					actions[CORN]=actions[CORN]-1
-				end
-				if v.action==GANGNAMSTYLE then
-					actions[GANGNAMSTYLE]=actions[GANGNAMSTYLE]-1
-				end
-				if v.action==AFRICA then
-					actions[AFRICA]=actions[AFRICA]-1
-				end
-				if v.action==KRIM then
-					actions[KRIM]=actions[KRIM]-1
-				end
-				if v.action==WELOVERUSSIA then
-					actions[WELOVERUSSIA]=actions[WELOVERUSSIA]-1
-				end
-				if v.action==KROMBACHER then
-					actions[KROMBACHER]=actions[KROMBACHER]-1
+				if actions[v.action] ~= nil then
+					if v.action==CORN then
+						actions[CORN]=actions[CORN]-1
+					end
+					if v.action==GANGNAMSTYLE then
+						actions[GANGNAMSTYLE]=actions[GANGNAMSTYLE]-1
+					end
+					if v.action==AFRICA then
+						actions[AFRICA]=actions[AFRICA]-1
+					end
+					if v.action==KRIM then
+						actions[KRIM]=actions[KRIM]-1
+					end
+					if v.action==WELOVERUSSIA then
+						actions[WELOVERUSSIA]=actions[WELOVERUSSIA]-1
+					end
+					if v.action==KROMBACHER then
+						actions[KROMBACHER]=actions[KROMBACHER]-1
+					end
 				end
 				-- show animation
 				spawn_animation(v)
@@ -185,6 +188,7 @@ function game:update(dt)
 		actions[AFRICA]=nil
 	end
 	if actions[KRIM] ~=nil and actions[KRIM]<=0 then
+		print(actions[KRIM])
 		table.insert(achivments, {title = "Weisst du noch Vitalie",text="Die Ukraiene wurde von den Russen Befreit"})
 		actions[KRIM]=nil
 	end
@@ -327,7 +331,9 @@ function spawn_object()
 		end
 		--KROMBACHER
 		if r==169 and g==141 and b==141 then
-			t.action = AKROMBACHER
+			t.action = KROMBACHER
+			t.image = rainforest
+			t.scale = 1
 		end
 	until t.image ~= nil
 	if t.action~=0 then 

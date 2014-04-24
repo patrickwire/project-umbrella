@@ -2,7 +2,7 @@ menu = Gamestate.new()
 
 function menu:draw()
 	title = love.graphics.newImage("title.png")
-	love.graphics.draw(title, 10, 10)
+	love.graphics.draw(title, 0, 0)
 end
 
 function menu:keypressed(key)
