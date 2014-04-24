@@ -4,11 +4,8 @@ WATER = 1
 LAND = 2
 
 function game:init()
-	self:reset()
-end
 
-function game:reset()
-
+	pause = false
 	images = {
 		map = love.graphics.newImage("assests/maps/weltkarte.png"),
 		storm = love.graphics.newImage("assests/gfx/orkan.png"),
@@ -18,9 +15,19 @@ function game:reset()
 		},
 		water = {
 			{image = love.graphics.newImage("assests/objects/schiff.png"),scale=0.05}
-
 		},
 	}
+	-- player
+	x, y = 200, 200
+	w = images.storm:getWidth()/10
+	h = images.storm:getHeight()/10
+	scale = 1
+	speed = 40
+	rotation = 0
+	storm = {}
+	storm.anim = newAnimation(images.storm, 1017, 1005, 0.06, 1)
+	cam = Camera(x, y,1)
+	points = 20
 
 	maps = {
 		world = love.image.newImageData("assests/maps/weltkarte.png")
@@ -44,21 +51,15 @@ function game:reset()
 	end
 	
 	objectInStorm = {}
-	-- player
-	x, y = 200, 200
-	w = images.storm:getWidth()/10
-	h = images.storm:getHeight()/10
-	scale = 1
-	speed = 40
-	rotation = 0
-	storm = {}
-	storm.anim = newAnimation(images.storm, 1017, 1005, 0.06, 1)
-	cam = Camera(x, y,1)
-	points = 0
 	
 end
 
 function game:update(dt)
+
+	if pause then
+		return
+	end
+		
 	if love.mouse.isDown("l")then
 		nx,ny = vector.normalize(vector.sub(game.width/2,game.height/2,love.mouse.getX(),love.mouse.getY()))
 		x =x - nx * dt * speed
@@ -83,7 +84,7 @@ function game:update(dt)
 	rotation = (rotation + dt * speed/10)%(2*math.pi)
 
 		-- cmaera update
-		local dx,dy = x - cam.x, y - cam.y
+	local dx,dy = x - cam.x, y - cam.y
     cam:move(dx/2, dy/2)
 		for i,obj in ipairs(objectInStorm) do
 			obj.radius=obj.radius *(1-dt)
@@ -92,7 +93,7 @@ function game:update(dt)
 				table.remove(objectInStorm, i)
 			end
 		end
-		cam:zoomTo(5/scale)
+	cam:zoomTo(5/scale)
 
 		-- update objects
 		for i, v in ipairs(objects) do
@@ -119,13 +120,14 @@ function game:update(dt)
 		if math.random(10000) <= 2000 * dt then
 		spawn_object()
 	end
-
-	if love.keyboard.isDown("escape") then
-		love.event.push("quit")
-	end
 end
 
 function game:draw()
+
+	if pause then
+		love.graphics.print("P A U S E", 10,10)
+	end
+	
 	-- draw in wolrd
 	cam:attach()
 		love.graphics.draw(images.map,0,0)
@@ -140,8 +142,6 @@ function game:draw()
 			rx,ry= vector.rotate(obj.pos,150,0)
 			curscale = obj.radius*obj.scale*10
 			love.graphics.draw(obj.image,
-			--	game.width/2-(obj.image:getWidth()*obj.scale/2*obj.radius)+rx*obj.radius*scale/10,
-			--	game.height/2-(obj.image:getHeight()*obj.scale/2*obj.radius)+ry*obj.radius*scale/10,
 				game.width/2-obj.image:getWidth()*curscale/2+rx*obj.radius*scale,
 				game.height/2-obj.image:getHeight()*curscale/2+ry*obj.radius*scale,
 				0,curscale)
@@ -154,18 +154,18 @@ function game:draw()
 end
 
 function game:keypressed(key)
-	if key == "p" and Gamestate.current() ~= menu then
-		love.event.push("pause")
+	if key == "p" then
+		pause = not pause
+	end
+	
+	if key == "escape" then
+		love.event.quit()
 	end
 end
 
 function spawn_object()
 
 	local t = {}
-
-	-- size
-
-
 
 	placed =false
 	-- position
@@ -196,21 +196,16 @@ function spawn_object()
 end
 
 function is_colliding(v)
-
-	--if x-w/2*scale <= v.x + v.w and x + w/2*scale >= v.x and y-h/2*scale <= v.y + v.h and y + h/2*scale >= v.y then
 	if vector.dist(v.x+v.w/2*v.scale,v.y+v.h/2*v.scale,x,y)<w*scale/4 then
 		print ("center x"..x.." y"..y.."w"..(w*scale/4))
 		print ("obj x"..v.x.." y"..v.y.." w"..v.w.." h"..v.h.." dist"..vector.dist(v.x+v.w/2*v.scale,v.y+v.h/2*v.scale,x,y))
 		return true
 	end
-
 	return false
 end
 
 function spawn_animation(v)
-
 	local t = {}
-
 	-- copy values
 	t.image = v.image
 	t.pos = 0

@@ -9,12 +9,10 @@ require "luas/menu"
 function love.load()
 	Gamestate.switch(menu)
 	Gamestate.init()
-	
 end
 
 function love.update(dt)
 	Gamestate.update(dt)
-	
 end
 
 function love.draw()
