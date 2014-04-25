@@ -285,6 +285,10 @@ function game:draw()
 		love.graphics.print("P A U S E",400, 300)
 		love.graphics.setNewFont(12)
 	end
+	if(speed<0)then
+		love.graphics.draw(title, 0, 0,0,game.width/1024,game.height/768)
+		pause = true
+	end
 end
 
 function game:keypressed(key)
