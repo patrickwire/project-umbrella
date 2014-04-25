@@ -20,11 +20,17 @@ MOBBYDICK = 10
 function game:init()
 	 math.randomseed( os.time() )
 	actions= {0,0,0,0,0,0,0,0,0,0}
+	music = love.audio.newSource("assets/sfx/loop.ogg")
+	music:setLooping(true)
+	music:setVolume(0.5)
+	music:play()
 	images = {
 		map = love.graphics.newImage("assets/maps/weltkarte_final.png"),
 		storm = love.graphics.newImage("assets/gfx/orkan.png"),
 		storm2 = love.graphics.newImage("assets/gfx/orkan_02.png"),
+		box = love.graphics.newImage("assets/gfx/box.png"),
 		regenwald = love.graphics.newImage("assets/objects/rainforest.jpg"),
+		akw = love.graphics.newImage("assets/objects/atomkraftwerk.png"),
 		cities = {
 			{image=love.graphics.newImage("assets/objects/Stadt_gross.png"),scale=0.1},
 			{image=love.graphics.newImage("assets/objects/feld_gelb.png"),scale=0.1},
@@ -45,9 +51,14 @@ function game:init()
 		},
 		desert = {
 			{image = love.graphics.newImage("assets/objects/Tipi02.png"),scale=0.05},
+			{image = love.graphics.newImage("assets/objects/Tipi02.png"),scale=0.05},
+			{image = love.graphics.newImage("assets/objects/pyramide.png"),scale=0.05},
 		},
 		mountens= {
 			{image = love.graphics.newImage("assets/objects/bergdorf.png"),scale=0.4},
+			},
+		ice = {
+			{image = love.graphics.newImage("assets/objects/Igludorf.png"),scale=0.4},
 		}
 	}
 
@@ -103,10 +114,10 @@ function game:update(dt)
 		x =x - nx * dt * speed
 		y =y - ny * dt * speed
 		if x > world.width then
-			x=world.width
+			x = 0
 		end
 		if x < 0 then
-			x=0
+			x=world.width
 		end
 		if y>world.height then
 			y=world.height
@@ -115,8 +126,10 @@ function game:update(dt)
 			y=0
 		end
 	end
+	
 	storm.anim:update(dt)
 	speed=speed - dt
+	music:setVolume(0.5*speed)
 	scale=math.log(points+2/3)
 	-- rotate storm
 	rotation = (rotation + dt * speed/10)%(2*math.pi)
@@ -192,7 +205,7 @@ function game:update(dt)
 	end
 	
 	if actions[GANGNAMSTYLE] ~=nil and actions[GANGNAMSTYLE]<=0 then
-		table.insert(achivments, {title = "oppan gangnam style",text="Kim Jong Un veranstaltet eien Parade für Dich"})
+		table.insert(achivments, {title = "Oppan Gangnam Style",text="Kim Jong Un veranstaltet eien Parade für Dich"})
 		actions[GANGNAMSTYLE]=nil
 	end
 	if actions[AFRICA] ~=nil and actions[AFRICA]<=0 then
@@ -200,7 +213,7 @@ function game:update(dt)
 		actions[AFRICA]=nil
 	end
 	if actions[KRIM] ~=nil and actions[KRIM]<=0 then
-		table.insert(achivments, {title = "Weisst du noch Vitalie",text="Die Ukraiene wurde von den Russen Befreit"})
+		table.insert(achivments, {title = "Weißt du noch Vitalie...",text="Die Ukraiene wurde von den Russen Befreit"})
 		actions[KRIM]=nil
 	end
 	if actions[WELOVERUSSIA] ~=nil and actions[WELOVERUSSIA]<=0 then
@@ -215,9 +228,9 @@ function game:update(dt)
 		table.insert(achivments, {title = "9/11 Faster then Al Qaida",text="Da bist du den Terorristen wohl zu vorgekommen"})
 		actions[NINEELEVEN]=nil
 	end
-	if actions[CASTRO] ~=nil and actions[CASTRO]<=0 then
-		table.insert(achivments, {title = "Freigang in Guantanamo Bay",text="Du hast alle Häftlinge aus Guantanamo befreit"})
-		actions[CASTRO]=nil
+	if actions[FUKOSHIMA] ~=nil and actions[FUKOSHIMA]<=0 then
+		table.insert(achivments, {title = "Bündnis 90/ Die Grünen: Atomwende",text="Du hast alle Atomkraftwerke abgeschaft"})
+		actions[FUKOSHIMA]=nil
 	end
 
 	if love.keyboard.isDown("escape") then
@@ -251,10 +264,12 @@ function game:draw()
 		end
 	end
 	for i,achiv in ipairs(achivments) do
+		love.graphics.draw(images.box,game.width-300,i*40)
 		love.graphics.setNewFont(18)
-		love.graphics.print(achiv.title,game.width-300,i*40)
+		love.graphics.printf(achiv.title,game.width-300-3,i*40,300-6,"center")
+		love.graphics.setNewFont(10)
+		love.graphics.printf(achiv.text,game.width-300-3,i*40+22,300-6,"center")
 		love.graphics.setNewFont(12)
-		love.graphics.print(achiv.text,game.width-300,i*40+22)
 	end
 	love.graphics.print(cam.x.." "..cam.y)
 	love.graphics.print("Objects"..#objects,0,15)
@@ -419,5 +434,31 @@ function create_static_objects()
 	t.h = t.image:getHeight() * t.scale
 	t.action = CASTRO
 	actions[CASTRO]=1
+	table.insert(objects, t)
+	t={}
+	--atomkraft
+	t.x,t.y = 5920,1448
+	t.scale=0.1
+	t.image = images.akw
+	t.w = t.image:getWidth() * t.scale
+	t.h = t.image:getHeight() * t.scale
+	t.action = FUKOSHIMA
+	actions[FUKOSHIMA]=3
+	table.insert(objects, t)
+	t.x,t.y = 3418,1273
+	t.scale=0.1
+	t.image = images.akw
+	t.w = t.image:getWidth() * t.scale
+	t.h = t.image:getHeight() * t.scale
+	t.action = FUKOSHIMA
+	actions[FUKOSHIMA]=3
+	table.insert(objects, t)
+	t.x,t.y = 949,1444
+	t.scale=0.1
+	t.image = images.akw
+	t.w = t.image:getWidth() * t.scale
+	t.h = t.image:getHeight() * t.scale
+	t.action = FUKOSHIMA
+	actions[FUKOSHIMA]=3
 	table.insert(objects, t)
 end
