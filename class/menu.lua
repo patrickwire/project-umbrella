@@ -4,7 +4,7 @@ screen	={
 	height = love.graphics.getHeight()
 }
 function menu:draw()
-	title = love.graphics.newImage("title.png")
+	title = love.graphics.newImage("assets/gfx/Start.png")
 	love.graphics.draw(title, 0, 0,0,screen.width/1024,screen.height/768)
 end
 

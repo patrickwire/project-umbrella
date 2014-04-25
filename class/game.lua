@@ -18,12 +18,13 @@ KROMBACHER = 9
 MOBBYDICK = 10
 
 function game:init()
-	 math.randomseed( os.time() )
-	actions= {0,0,0,0,0,0,0,0,0,0}
 	music = love.audio.newSource("assets/sfx/loop.ogg")
 	music:setLooping(true)
 	music:setVolume(0.5)
 	music:play()
+	 math.randomseed( os.time() )
+	actions= {0,0,0,0,0,0,0,0,0,0}
+	
 	images = {
 		map = love.graphics.newImage("assets/maps/weltkarte_final.png"),
 		storm = love.graphics.newImage("assets/gfx/orkan.png"),
@@ -264,18 +265,21 @@ function game:draw()
 		end
 	end
 	for i,achiv in ipairs(achivments) do
-		love.graphics.draw(images.box,game.width-300,i*40)
+		love.graphics.draw(images.box,game.width-300,i*43)
 		love.graphics.setNewFont(18)
-		love.graphics.printf(achiv.title,game.width-300-3,i*40,300-6,"center")
+		love.graphics.printf(achiv.title,game.width-300-3,i*43,300-6,"center")
 		love.graphics.setNewFont(10)
-		love.graphics.printf(achiv.text,game.width-300-3,i*40+22,300-6,"center")
+		love.graphics.printf(achiv.text,game.width-300-3,i*43+22,300-6,"center")
 		love.graphics.setNewFont(12)
 	end
-	love.graphics.print(cam.x.." "..cam.y)
-	love.graphics.print("Objects"..#objects,0,15)
-	love.graphics.print("Animations"..#objectInStorm,0,30)
-	love.graphics.print("scale"..scale,0,45)
-	
+	--love.graphics.print(cam.x.." "..cam.y)
+	--love.graphics.print("Objects"..#objects,0,15)
+	--love.graphics.print("Animations"..#objectInStorm,0,30)
+	--love.graphics.print("scale"..scale,0,45)
+	love.graphics.setNewFont(22)
+	love.graphics.draw(images.box,0,43)
+	love.graphics.print(math.floor(speed*4).." miles per hour",10,50)
+	love.graphics.setNewFont(12)
 	if pause then
 		love.graphics.setNewFont(40)
 		love.graphics.print("P A U S E",400, 300)
@@ -438,7 +442,7 @@ function create_static_objects()
 	t={}
 	--atomkraft
 	t.x,t.y = 5920,1448
-	t.scale=0.1
+	t.scale=0.4
 	t.image = images.akw
 	t.w = t.image:getWidth() * t.scale
 	t.h = t.image:getHeight() * t.scale
@@ -446,7 +450,7 @@ function create_static_objects()
 	actions[FUKOSHIMA]=3
 	table.insert(objects, t)
 	t.x,t.y = 3418,1273
-	t.scale=0.1
+	t.scale=0.4
 	t.image = images.akw
 	t.w = t.image:getWidth() * t.scale
 	t.h = t.image:getHeight() * t.scale
@@ -454,7 +458,7 @@ function create_static_objects()
 	actions[FUKOSHIMA]=3
 	table.insert(objects, t)
 	t.x,t.y = 949,1444
-	t.scale=0.1
+	t.scale=0.4
 	t.image = images.akw
 	t.w = t.image:getWidth() * t.scale
 	t.h = t.image:getHeight() * t.scale
