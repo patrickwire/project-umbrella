@@ -18,6 +18,8 @@ KROMBACHER = 9
 MOBBYDICK = 10
 
 function game:init()
+	help = true
+	love.graphics.setColor(255, 255, 255, 255)
 	music = love.audio.newSource("assets/sfx/loop.ogg")
 	music:setLooping(true)
 	music:setVolume(0.5)
@@ -30,6 +32,7 @@ function game:init()
 		storm = love.graphics.newImage("assets/gfx/orkan.png"),
 		storm2 = love.graphics.newImage("assets/gfx/orkan_02.png"),
 		box = love.graphics.newImage("assets/gfx/box.png"),
+		help = love.graphics.newImage("assets/gfx/Hilfe.png"),
 		regenwald = love.graphics.newImage("assets/objects/rainforest.jpg"),
 		akw = love.graphics.newImage("assets/objects/atomkraftwerk.png"),
 		cities = {
@@ -97,7 +100,7 @@ function game:init()
 	storm = {}
 	storm.anim = newAnimation(images.storm, 1017, 1005, 0.06, 1)
 	cam = Camera(x, y,1)
-	points = 20
+	points = 3
 	achivments = {}
 	
 	pause = false
@@ -129,7 +132,11 @@ function game:update(dt)
 	end
 	
 	storm.anim:update(dt)
-	speed=speed - dt
+	if help then
+		
+	else
+		speed=speed - dt
+	end
 	music:setVolume(0.5*speed/40)
 	scale=math.log(points+2/3)
 	-- rotate storm
@@ -190,8 +197,8 @@ function game:update(dt)
 				end
 				points = points + 1
 				speed=speed+3
-				if speed >40 then
-					speed = 40
+				if speed >50 then
+					speed = 50
 				end
 				table.remove(objects, i)
 			end
@@ -289,11 +296,17 @@ function game:draw()
 		love.graphics.draw(title, 0, 0,0,game.width/1024,game.height/768)
 		pause = true
 	end
+	if help then
+		love.graphics.draw(images.help, 0, 0,0,game.width/1024,game.height/768)
+	end
 end
 
 function game:keypressed(key)
 	if key == "p" then
 		pause = not pause
+	end
+	if key == "return" then
+		help = false
 	end
 end
 
@@ -442,6 +455,17 @@ function create_static_objects()
 	t.h = t.image:getHeight() * t.scale
 	t.action = CASTRO
 	actions[CASTRO]=1
+	table.insert(objects, t)
+	t={}
+	--korea
+	t={}
+	t.x,t.y = 5684,1476
+	t.scale=0.1
+	t.image = images.cities[6].image
+	t.w = t.image:getWidth() * t.scale
+	t.h = t.image:getHeight() * t.scale
+	t.action = GANGNAMSTYLE
+	actions[GANGNAMSTYLE]=actions[GANGNAMSTYLE]+1
 	table.insert(objects, t)
 	t={}
 	--atomkraft
