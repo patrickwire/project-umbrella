@@ -8,6 +8,10 @@ require "class/menu"
 require "class/intro"
 
 function love.load()
+	music = love.audio.newSource("assets/sfx/loop.ogg")
+	music:setLooping(true)
+	music:setVolume(0.5)
+	music:play()
 	Gamestate.switch(menu)
 	Gamestate.init()
 end
