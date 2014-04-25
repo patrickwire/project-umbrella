@@ -5,6 +5,7 @@ Gamestate = require "hump.gamestate"
 
 require "class/game"
 require "class/menu"
+require "class/intro"
 
 function love.load()
 	
