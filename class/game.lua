@@ -67,7 +67,7 @@ function game:init()
 		actions = love.image.newImageData("assets/maps/weltkarte_actions.png")
 	}
 	-- sound effect
-	sound = love.audio.newSource("assets/sfx/crash.ogg", "static")
+	sound = love.audio.newSource("assets/sfx/rock_breaking.mp3", "static")
 
 	-- game
 	game={
@@ -129,7 +129,7 @@ function game:update(dt)
 	
 	storm.anim:update(dt)
 	speed=speed - dt
-	music:setVolume(0.5*speed)
+	music:setVolume(0.5*speed/40)
 	scale=math.log(points+2/3)
 	-- rotate storm
 	rotation = (rotation + dt * speed/10)%(2*math.pi)
