@@ -3,6 +3,7 @@ game = Gamestate.new()
 WATER = 1
 LAND = 2
 DESERT = 3
+MOUNTEN = 4
 
 
 AFRICA = 1
@@ -10,7 +11,7 @@ WELOVERUSSIA = 2
 CORN = 3
 KRIM = 4
 GANGNAMSTYLE = 5
-CSTRO = 6
+CASTRO = 6
 FUKOSHIMA = 7
 NINEELEVEN = 8
 KROMBACHER = 9
@@ -20,9 +21,10 @@ function game:init()
 	 math.randomseed( os.time() )
 	actions= {0,0,0,0,0,0,0,0,0,0}
 	images = {
-		map = love.graphics.newImage("assets/maps/weltkarte2.png"),
+		map = love.graphics.newImage("assets/maps/weltkarte_final.png"),
 		storm = love.graphics.newImage("assets/gfx/orkan.png"),
 		storm2 = love.graphics.newImage("assets/gfx/orkan_02.png"),
+		regenwald = love.graphics.newImage("assets/objects/rainforest.jpg"),
 		cities = {
 			{image=love.graphics.newImage("assets/objects/Stadt_gross.png"),scale=0.1},
 			{image=love.graphics.newImage("assets/objects/feld_gelb.png"),scale=0.1},
@@ -44,6 +46,9 @@ function game:init()
 		desert = {
 			{image = love.graphics.newImage("assets/objects/Tipi02.png"),scale=0.05},
 		},
+		mountens= {
+			{image = love.graphics.newImage("assets/objects/bergdorf.png"),scale=0.4},
+		}
 	}
 
 	maps = {
@@ -67,6 +72,7 @@ function game:init()
 	for i=1,3000 do
 		spawn_object()
 	end
+	create_static_objects()
 	
 	objectInStorm = {}
 	-- player
@@ -150,6 +156,15 @@ function game:update(dt)
 				if v.action==KROMBACHER then
 					actions[KROMBACHER]=actions[KROMBACHER]-1
 				end
+				if v.action==NINEELEVEN then
+					actions[NINEELEVEN]=actions[NINEELEVEN]-1
+				end
+				if v.action==FUKOSHIMA then
+					actions[FUKOSHIMA]=actions[FUKOSHIMA]-1
+				end
+				if v.action==CASTRO then
+					actions[CASTRO]=actions[CASTRO]-1
+				end
 				-- show animation
 				spawn_animation(v)
 
@@ -195,6 +210,14 @@ function game:update(dt)
 	if actions[KROMBACHER] ~=nil and actions[KROMBACHER]<=0 then
 		table.insert(achivments, {title = "Krombacher Regenwaldprojekt",text="Da brauchen wir ganzschön viel Bier um das wieder Aufzubauen..."})
 		actions[KROMBACHER]=nil
+	end
+	if actions[NINEELEVEN] ~=nil and actions[NINEELEVEN]<=0 then
+		table.insert(achivments, {title = "9/11 Faster then Al Qaida",text="Da bist du den Terorristen wohl zu vorgekommen"})
+		actions[NINEELEVEN]=nil
+	end
+	if actions[CASTRO] ~=nil and actions[CASTRO]<=0 then
+		table.insert(achivments, {title = "Freigang in Guantanamo Bay",text="Du hast alle Häftlinge aus Guantanamo befreit"})
+		actions[CASTRO]=nil
 	end
 
 	if love.keyboard.isDown("escape") then
@@ -282,10 +305,17 @@ function spawn_object()
 			objlist = images.desert
 			t.type = DESERT
 		end
+		if r==103 and g==59 and b==21 and math.random(1,3)==1 then
+			objlist = images.mountens
+			t.type = MOUNTEN
+		end
 		
 		-- load image
 		if objlist ~= nil then
 			rand = math.random(1,#objlist)
+			if r==21 and g==40 and b==140 and t.type == LAND then
+				rand = 2
+			end
 			t.number = rand
 			t.image = objlist[rand].image
 			t.scale = math.random(40, 100) * 0.003 * objlist[rand].scale
@@ -302,7 +332,7 @@ function spawn_object()
 			t.action = WELOVERUSSIA
 		end
 		--CORN
-		if r==21 and g==40 and b==140 and (t.number == 2 or t.number == 3) and t.type == LAND then
+		if r==21 and g==40 and b==140 and t.type == LAND then
 			t.action = CORN
 		end
 		--KRIM
@@ -327,7 +357,9 @@ function spawn_object()
 		end
 		--KROMBACHER
 		if r==169 and g==141 and b==141 then
-			t.action = AKROMBACHER
+			t.action = KROMBACHER
+			t.image = images.regenwald
+			t.scale = 1
 		end
 	until t.image ~= nil
 	if t.action~=0 then 
@@ -364,4 +396,28 @@ function spawn_animation(v)
 	-- create animation
 
 	table.insert(objectInStorm, t)
+end
+
+function create_static_objects()
+	---new york
+	t={}
+	t.x,t.y = 2032,1272
+	t.scale=0.1
+	t.image = images.cities[1].image
+	t.w = t.image:getWidth() * t.scale
+	t.h = t.image:getHeight() * t.scale
+	t.action = NINEELEVEN
+	actions[NINEELEVEN]=1
+	table.insert(objects, t)
+	
+	--guantanamo
+	t={}
+	t.x,t.y = 1676,1916
+	t.scale=0.1
+	t.image = images.cities[6].image
+	t.w = t.image:getWidth() * t.scale
+	t.h = t.image:getHeight() * t.scale
+	t.action = CASTRO
+	actions[CASTRO]=1
+	table.insert(objects, t)
 end
