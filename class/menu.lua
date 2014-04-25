@@ -10,7 +10,7 @@ end
 
 function menu:keypressed(key)
 	if key == "return" then
-		Gamestate.switch(game)
+		Gamestate.switch(intro)
 	end
 	
 	if key == "escape" then
